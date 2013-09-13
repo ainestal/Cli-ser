@@ -12,17 +12,29 @@ parser.add_argument('--bind_adr', default='127.0.0.1', required=False,
                     dest='bind_adr', help='Bind address to be used')
 parser.add_argument('--message', default='Hello World !!', required=False,
                     dest='message', help='Message to send to the server')
+parser.add_argument('--file', default=None, required=False,
+                    dest='file', help='File to send to the server')
 args = parser.parse_args()
 
 TCP_IP = args.bind_adr
 TCP_PORT = args.port
 BUFFER_SIZE = args.buffer
-MESSAGE = args.message
+
+if not args.file:
+    MESSAGE = args.message
+else:
+    MESSAGE = ""
+    # process file
+    with open(args.file, "r") as f:
+        byte = f.read(1)
+        while byte != "":
+            MESSAGE = MESSAGE + byte
+            byte = f.read(1)
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((TCP_IP, TCP_PORT))
 s.send(MESSAGE)
-data = s.recv(BUFFER_SIZE)
+#data = s.recv(BUFFER_SIZE)
 s.close()
 
-print "received data:", data
+#print "received data:", data
